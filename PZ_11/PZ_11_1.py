@@ -1,88 +1,34 @@
-#Средствами языка Python сформировать два текстовых файла (.txt), содержащих по одной
-#последовательности из целых положительных и отрицательных чисел. Сформировать
-#новый текстовый файл (.txt) следующего вида, предварительно выполнив требуемую
-#обработку элементов:
-#Содержимое первого файла:
-#Четные элементы:
-#Произведение четных элементов:
-#Минимальный элемент:
-#Содержимое второго файла:
-#Нечетные элементы:
-#Количество нечетных элементов:
-#Сумма нечетных элементов:
 import random
+def generate_files():
+    with open('positive_numbers.txt', 'w') as pos_file:
+        pos_numbers = [random.randint(1, 100) for _ in range(10)]
+        pos_file.write(' '.join(map(str, pos_numbers)))
+    with open('negative_numbers.txt', 'w') as neg_file:
+        neg_numbers = [random.randint(-100, -1) for _ in range(10)]
+        neg_file.write(' '.join(map(str, neg_numbers)))
+def process_files():
+    with open('positive_numbers.txt', 'r') as pos_file:
+        pos_numbers = list(map(int, pos_file.read().strip().split()))
+    even_numbers = [num for num in pos_numbers if num % 2 == 0]
+    product_of_evens = 1 if even_numbers else 0
+    for num in even_numbers:
+        product_of_evens *= num
+    min_positive = min(pos_numbers) if pos_numbers else None
+    with open('negative_numbers.txt', 'r') as neg_file:
+        neg_numbers = list(map(int, neg_file.read().strip().split()))
+    odd_numbers = [num for num in neg_numbers if num % 2 != 0]
+    count_of_odds = len(odd_numbers)
+    sum_of_odds = sum(odd_numbers)
+    with open('results.txt', 'w') as result_file:
+        result_file.write("Содержимое первого файла:\n")
+        result_file.write("Четные элементы: " + ' '.join(map(str, even_numbers)) + '\n')
+        result_file.write("Произведение четных элементов: " + str(product_of_evens) + '\n')
+        result_file.write("Минимальный элемент: " + str(min_positive) + '\n')
 
-def generate_numbers(filename, count, positive_only):
-    with open(filename, 'w') as f:
-        for _ in range(count):
-            if positive_only:
-                num = random.randint(1, 30)  # Только положительные числа
-            else:
-                num = random.randint(-30, 30) # Положительные и отрицательные
-            f.write(str(num) + '\n')
-
-def process_numbers(file1, file2, output_file):
-    even_numbers = []
-    odd_numbers = []
-
-    try:
-        with open(file1, 'r') as f1:
-            numbers1 = [int(line.strip()) for line in f1]
-    except FileNotFoundError:
-        print(f"Ошибка: Файл {file1} не найден.")
-        return
-    except ValueError:
-        print(f"Ошибка: В файле {file1} обнаружены некорректные данные (не целые числа).")
-        return
-
-    try:
-        with open(file2, 'r') as f2:
-            numbers2 = [int(line.strip()) for line in f2]
-    except FileNotFoundError:
-        print(f"Ошибка: Файл {file2} не найден.")
-        return
-    except ValueError:
-        print(f"Ошибка: В файле {file2} обнаружены некорректные данные (не целые числа).")
-        return
-
-    for num in numbers1:
-        if num % 2 == 0:
-            even_numbers.append(num)
-
-    for num in numbers2:
-        if num % 2 != 0:
-            odd_numbers.append(num)
-
-    product_even = 1
-    if even_numbers:
-        for num in even_numbers:
-            product_even *= num
-        min_even = min(even_numbers)
-    else:
-        product_even = 0
-        min_even = "Нет четных чисел"
-
-    count_odd = len(odd_numbers)
-    sum_odd = sum(odd_numbers)
-
-    with open(output_file, 'w') as outfile:
-        outfile.write("Содержимое первого файла:\n")
-        outfile.write(f"Четные элементы: {even_numbers}\n")
-        outfile.write(f"Произведение четных элементов: {product_even}\n")
-        outfile.write(f"Минимальный элемент: {min_even}\n")
-
-        outfile.write("\nСодержимое второго файла:\n")
-        outfile.write(f"Нечетные элементы: {odd_numbers}\n")
-        outfile.write(f"Количество нечетных элементов: {count_odd}\n")
-        outfile.write(f"Сумма нечетных элементов: {sum_odd}\n")
-
-file1 = "positive_numbers.txt"
-file2 = "negative_numbers.txt"
-output_file = "result.txt"
-
-generate_numbers(file1, 10, True)
-generate_numbers(file2, 10, False)
-
-process_numbers(file1, file2, output_file)
-
-print(f"Результаты записаны в файл: {output_file}")
+        result_file.write("\nСодержимое второго файла:\n")
+        result_file.write("Нечетные элементы: " + ' '.join(map(str, odd_numbers)) + '\n')
+        result_file.write("Количество нечетных элементов: " + str(count_of_odds) + '\n')
+        result_file.write("Сумма нечетных элементов: " + str(sum_of_odds) + '\n')
+if __name__ == "__main__":
+    generate_files()
+    process_files()
